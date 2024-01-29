@@ -5,6 +5,7 @@ import api
 class App:
     def __init__(self):
         self.root = Tk()
+        self.root.title("London Air Quality Monitoring")
         self.root.geometry("500x820")
         self.root.resizable(False, False)
 
