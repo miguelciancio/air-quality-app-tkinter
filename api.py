@@ -30,7 +30,7 @@ class MyApi:
                     )
                 else:
                     pass
-                
+
         return self.get_local_authorities_list
 
     def get_air_quality_data(self, local_authority_name):
