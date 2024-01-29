@@ -30,17 +30,17 @@ class MyApi:
                     )
                 else:
                     pass
-            # print(self.api["HourlyAirQualityIndex"]["LocalAuthority"][1].get("@LocalAuthorityName"))
-
+                
         return self.get_local_authorities_list
 
-    def get_air_quality_data(self, local_authority_id):
+    def get_air_quality_data(self, local_authority_name):
+        self.site_names = []
         key_to_check = "Site"
         for index, value in enumerate(self.api):
             for x in self.api[value]["LocalAuthority"]:
                 if key_to_check in x.keys():
-                    print(x)
-                    if local_authority_id == int(x['@LocalAuthorityCode']):
+                    # print(x)
+                    if local_authority_name == x['@LocalAuthorityName']:
                         # print(x)
                         if isinstance(x["Site"], dict):
                             # print(x)
@@ -52,9 +52,4 @@ class MyApi:
                                 # print(x["Site"][i])
                                 i += 1
 
-        print(self.site_names)
-
-
-api_object = MyApi()
-api_object.load_api()
-api_object.get_air_quality_data()
+        return self.site_names

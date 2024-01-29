@@ -5,7 +5,8 @@ import api
 class App:
     def __init__(self):
         self.root = Tk()
-        self.root.geometry("400x400")
+        self.root.geometry("500x820")
+        self.root.resizable(False, False)
 
         # ===== Widgets Declaration Area ===== #
         self.select_frame = Frame(self.root)
@@ -13,6 +14,8 @@ class App:
 
         self.display_frame = Frame(self.root)
         self.display_frame.pack(fill=BOTH)
+
+        self.label2 = Label(self.display_frame)
 
         # ===== Variables Area ===== #
         self.value_inside = StringVar()
@@ -30,7 +33,7 @@ class App:
         # ===== First Frame Area =====#
         # Create Label.
         label1 = Label(self.select_frame, text="Select Options")
-        label1.configure(width=10)
+        label1.configure(width=30)
         label1.grid(row=0, column=0, ipadx=10)
 
         # Create Entry Combo box.
@@ -39,7 +42,7 @@ class App:
         self.value_inside.set("Select an Option")
 
         entry_combobox = OptionMenu(self.select_frame, self.value_inside, *select_list)
-        entry_combobox.configure(width=23)
+        entry_combobox.configure(width=29)
         entry_combobox.grid(row=0, column=1, pady=10)
 
         # Create Buttons.
@@ -49,19 +52,32 @@ class App:
 
         clear_button = Button(self.select_frame, text="Clear", command=self.clear_all)
         clear_button.grid(row=1, column=1, padx=24, ipadx=10, sticky=W)
-        clear_button.configure(width=20)
+        clear_button.configure(width=27)
 
     def show_air_quality(self):
         self.clear_all()
+
         if self.value_inside.get() == "Select an Option":
             pass
         else:
-            label2 = Label(self.display_frame, text=self.value_inside.get())
-            label2.grid(row=0, column=0, columnspan=2)
+            api_values_list = self.my_api.get_air_quality_data(self.value_inside.get())
+
+            for index, values in enumerate(api_values_list):
+                if isinstance(values[1], dict):
+                    my_label = Label(self.display_frame, text=f"""{values[0]}: \
+{values[1]['@SpeciesDescription']} ({values[1]['@SpeciesCode']}) - \
+{values[1]['@AirQualityIndex']} AQI {values[1]['@AirQualityBand']}.""", anchor=W)
+                    my_label.pack(fill=BOTH, side=BOTTOM)
+                else:
+                    for value in values[1]:
+                        my_label = Label(self.display_frame, text=f"""{values[0]}: \
+{value['@SpeciesDescription']} ({value['@SpeciesCode']}) - \
+{value['@AirQualityIndex']} AQI {value['@AirQualityBand']}.""", anchor=W)
+                        my_label.pack(fill=BOTH, side=BOTTOM)
 
     def clear_all(self):
-        label3 = Label(self.display_frame, text="")
-        label3.grid(row=0, column=0, columnspan=2, sticky=W+E)
+        for widgets in self.display_frame.winfo_children():
+            widgets.destroy()
 
     def run_window(self):
         self.root.mainloop()
