@@ -7,6 +7,7 @@ class MyApi:
         self.api_request = None
         self.api = None
         self.get_local_authorities_list = []
+        self.site_names = []
 
     def load_api(self):
         try:
@@ -19,13 +20,41 @@ class MyApi:
             print(self.api)
 
     def get_local_authorities(self):
-        for index, value in enumerate(self.api):
-            for x in self.api[value]["LocalAuthority"]:
-                self.get_local_authorities_list.append(
-                    self.api[value]["LocalAuthority"][index].get("@LocalAuthorityName")
-                )
-                index += 1
+        key_to_check = "Site"
+
+        for value in self.api:
+            for local_authority_name in self.api[value]["LocalAuthority"]:
+                if key_to_check in local_authority_name.keys():
+                    self.get_local_authorities_list.append(
+                        local_authority_name["@LocalAuthorityName"]
+                    )
+                else:
+                    pass
             # print(self.api["HourlyAirQualityIndex"]["LocalAuthority"][1].get("@LocalAuthorityName"))
 
         return self.get_local_authorities_list
 
+    def get_air_quality_data(self, local_authority_id):
+        key_to_check = "Site"
+        for index, value in enumerate(self.api):
+            for x in self.api[value]["LocalAuthority"]:
+                if key_to_check in x.keys():
+                    print(x)
+                    if local_authority_id == int(x['@LocalAuthorityCode']):
+                        # print(x)
+                        if isinstance(x["Site"], dict):
+                            # print(x)
+                            self.site_names.append((x["Site"]["@SiteName"], x["Site"]["Species"]))
+                        else:
+                            i = 0
+                            while i < len(x["Site"]):
+                                self.site_names.append((x["Site"][i]["@SiteName"], x["Site"][i]["Species"]))
+                                # print(x["Site"][i])
+                                i += 1
+
+        print(self.site_names)
+
+
+api_object = MyApi()
+api_object.load_api()
+api_object.get_air_quality_data()
