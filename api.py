@@ -28,3 +28,4 @@ class MyApi:
             # print(self.api["HourlyAirQualityIndex"]["LocalAuthority"][1].get("@LocalAuthorityName"))
 
         return self.get_local_authorities_list
+

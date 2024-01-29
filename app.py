@@ -1,4 +1,5 @@
 from tkinter import *
+import api
 
 
 class App:
@@ -14,8 +15,12 @@ class App:
         self.display_frame.pack(fill=BOTH)
 
         # ===== Variables Area ===== #
-        self.select_list = []
         self.value_inside = StringVar()
+
+        # ===== API Area ===== #
+        self.api = api
+        self.my_api = api.MyApi()
+        self.my_api.load_api()
 
     def main_window(self):
         """
@@ -29,12 +34,12 @@ class App:
         label1.grid(row=0, column=0, ipadx=10)
 
         # Create Entry Combo box.
-        self.select_list = [1, 2, 3, 4, 5, "Hello", "World"]
+        select_list = self.my_api.get_local_authorities()
 
         self.value_inside.set("Select an Option")
 
-        entry_combobox = OptionMenu(self.select_frame, self.value_inside, *self.select_list)
-        entry_combobox.configure(width=21)
+        entry_combobox = OptionMenu(self.select_frame, self.value_inside, *select_list)
+        entry_combobox.configure(width=23)
         entry_combobox.grid(row=0, column=1, pady=10)
 
         # Create Buttons.
